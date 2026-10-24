@@ -16,8 +16,7 @@ public record AppConfig(
         Path csvFile,
         boolean positiveXMeansTowardComplex,
         int minMovementMm,
-        long minCrossingMillis,
-        int maxDistanceMm) {
+        long minCrossingMillis) {
 
     public static AppConfig load(Path file) {
         Properties settings = new Properties();
@@ -38,7 +37,6 @@ public record AppConfig(
                 Path.of(settings.getProperty("csv.file")),
                 Boolean.parseBoolean(settings.getProperty("direction.positiveXMeansTowardComplex")),
                 Integer.parseInt(settings.getProperty("detection.minMovementMm")),
-                Long.parseLong(settings.getProperty("detection.minCrossingMillis")),
-                Integer.parseInt(settings.getProperty("detection.maxDistanceMm")));
+                Long.parseLong(settings.getProperty("detection.minCrossingMillis")));
     }
 }

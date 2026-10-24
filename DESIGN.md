@@ -7,15 +7,14 @@
 An HLK-LD2450 mmWave radar, wired to an ESP32-C3, faces a bedroom window. People often walk past it on their way
 to or from the apartment complex. The ESP32 sends each radar reading (the person's x/y position) over USB to a
 Raspberry Pi. On the Pi, the Java app turns those readings into **crossing events** (when someone walked past,
-how long it took, and which direction they went) and saves each one to a CSV file. Motion farther than 5 feet
-away (trees, cars) is ignored.
+how long it took, and which direction they went) and saves each one to a CSV file.
 
 ## Architecture
 
 ```
 LD2450 -> ESP32 --USB--> SensorSource ---SensorReading---> CrossingDetector ---CrossingEvent---> CrossingListeners
-                         (Serial or Simulated,             (state machine)                      ConsoleLogger
-                          wrapped in RangeLimited)                                              CsvEventStore
+                         (Serial or Simulated)             (state machine)                      ConsoleLogger
+                                                                                                CsvEventStore
 ```
 
 | Folder | Job |
@@ -54,20 +53,6 @@ if/else or switch on "what mode am I in".
 (the real ESP32) or a `SimulatedSensorSource` (fake people walking past, for development and demos without
 hardware). This is the only place in the program that chooses. Everything else just uses a `SensorSource`.
 
-### 4. Decorator
-**Where:** `sensor/RangeLimitedSensorSource`.
-
-**How:** It wraps any other `SensorSource` and is itself a `SensorSource`. Each reading passes through it, and
-anything farther than `detection.maxDistanceMm` (5 feet by default) is turned into a "nobody there" reading.
-The factory wraps every sensor in it, so the real and simulated sensors both get the filter, and neither of them
-had to change.
-
-### Bonus: Adapter
-**Where:** `sensor/SensorLineParser` (used by `SerialSensorSource`).
-
-**How:** The ESP32 speaks plain text (`"-820,1450"` or `"none"`). The adapter converts that text into
-`SensorReading` objects, so hardware details never leak into the rest of the code.
-
 ## OO principles
 - **Coding to abstractions:** The detector only knows `CrossingListener`. `WindowWatcher` only knows `SensorSource`.
 - **Polymorphism:** Detector states, sensor sources and listeners are each swapped behind their interface.
@@ -80,6 +65,5 @@ had to change.
 |---|---|
 | `CrossingDetectorTest` | one event per walk, no event while the person is still there, noise ignored, both directions, unknown direction, every listener notified once |
 | `SensorLineParserTest` | position lines, "none", junk lines ignored |
-| `RangeLimitedSensorSourceTest` | close readings kept, far readings (straight ahead or off to the side) ignored, end-of-data and close passed through |
 | `CsvEventStoreTest` | save then load, header written once, missing file |
-| `SensorSourceTest` | factory wraps the sensor in the range limit, rejects unknown types, full simulated run detects alternating directions |
+| `SensorSourceTest` | factory builds the simulated sensor, rejects unknown types, full simulated run detects alternating directions |

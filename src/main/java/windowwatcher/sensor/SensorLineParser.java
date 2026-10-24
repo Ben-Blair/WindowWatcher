@@ -4,7 +4,7 @@ import java.util.Optional;
 import windowwatcher.model.SensorReading;
 
 /**
- * ADAPTER: the ESP32 prints plain text lines like "-820,1450" (x,y in mm) or "none".
+ * The ESP32 prints plain text lines like "-820,1450" (x,y in mm) or "none".
  * This class turns those lines into SensorReading objects that the rest of the program understands.
  */
 public class SensorLineParser {

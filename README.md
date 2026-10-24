@@ -18,7 +18,7 @@ mvn compile exec:java    # simulated people walk past; events go into events.csv
 2. `WindowWatcher.java`: the main loop (sensor reading → detector)
 3. `detection/`: turns readings into crossing events (State pattern)
 4. `output/`: what happens to each event (Observer)
-5. `sensor/`: real vs simulated sensor, and the 5 ft range limit (Factory + Decorator + Adapter)
+5. `sensor/`: real vs simulated sensor (Factory)
 
 ## Running on the Raspberry Pi with the real sensor
 1. Flash the ESP32-C3 (PlatformIO; wiring is the same as garage-radar: sensor TX → GPIO20, sensor RX → GPIO21):

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import windowwatcher.detection.CrossingDetector;
 import windowwatcher.detection.DirectionDecider;
 import windowwatcher.model.Direction;
-import windowwatcher.sensor.RangeLimitedSensorSource;
 import windowwatcher.sensor.SensorSource;
 import windowwatcher.sensor.SensorSourceFactory;
 import windowwatcher.sensor.SimulatedSensorSource;
@@ -23,16 +22,16 @@ class SensorSourceTest {
 
     private AppConfig configWithSource(String source) {
         return new AppConfig(source, "/dev/ttyUSB0", 115200, 2, Path.of("events.csv"),
-                true, 500, 500, 1524);
+                true, 500, 500);
     }
 
     @Test
-    void factoryWrapsTheSensorInARangeLimit() {
+    void factoryBuildsTheSimulatedSensor() {
         SensorSourceFactory factory = new SensorSourceFactory(fixedClock);
 
         SensorSource sensor = factory.create(configWithSource("simulated"));
 
-        assertInstanceOf(RangeLimitedSensorSource.class, sensor);
+        assertInstanceOf(SimulatedSensorSource.class, sensor);
         assertTrue(sensor.readNext().isPresent());
     }
 

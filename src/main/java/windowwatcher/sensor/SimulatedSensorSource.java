@@ -17,7 +17,7 @@ public class SimulatedSensorSource implements SensorSource {
     private static final int EMPTY_READINGS_BETWEEN_WALKS = 10;
     private static final int WALK_START_X_MM = -1000;
     private static final int WALK_END_X_MM = 1000;
-    private static final int DISTANCE_FROM_WINDOW_MM = 900; // stays within the 5 ft range limit
+    private static final int DISTANCE_FROM_WINDOW_MM = 900;
 
     private final Iterator<SensorReading> readings;
     private final boolean runInRealTime;
